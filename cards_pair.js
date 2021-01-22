@@ -3,13 +3,16 @@
   const BACK_GROUND_COLOR_CARD_FIELD ='#397670';
   const FONT_COLOR_LIGHT = '#397670';
   const BORDER_RADIUS = '12px';
-  // const FONT_COLOR_LIGHT = '#123EAB';
   const BLOCK_MARGIN_BORDER = '5vh';
   const FONT_SIZE_MAIN = '24px';
 
-  const sizeHorizontal = 4
-  const sizeVertical = 4;
+  const CARDS_HORIZONTAL = 4
+  const CARDS_VERTICAL = 4;
 
+  let newCardsHorizontal = CARDS_HORIZONTAL;
+  let newCardsVertical = CARDS_VERTICAL;
+
+  // Полноэкранная оберка для игры
   const wraper = document.getElementById('cardsPairApp');
   wraper.style.margin = 0;
   wraper.style.padding = 0;
@@ -81,7 +84,6 @@
   descriptionRule.style.fontSize = FONT_SIZE_MAIN*0.75
   descriptionRule.style.marginBottom = BLOCK_MARGIN_BORDER*0.6;
 
-
   // кнопка начать игру
   const buttonStartGame = document.createElement('button');
   buttonStartGame.style.padding = '10px 20px'
@@ -95,34 +97,107 @@
   // Функция создания игровой формы для ввода кол-ва карт в игре
   function createGameSizeForm() {
     gameSizeForm.append(gameSizeFormCaption);
-    let [stringHorizontal, inputHorizontal] = createInput('По горизонтали', sizeHorizontal);
+    let [stringHorizontal, inputHorizontal] = createInput('По горизонтали', CARDS_HORIZONTAL);
     gameSizeForm.append(stringHorizontal);
-    let [stringVertical, inputVertical] = createInput('По вертикали', sizeVertical);
+    let [stringVertical, inputVertical] = createInput('По вертикали', CARDS_VERTICAL);
     gameSizeForm.append(stringVertical);
     gameSizeForm.append(descriptionRule);
     gameSizeForm.append(buttonStartGame);
+    // Нажатие на кнопку 'Начать игру'
     buttonStartGame.addEventListener('click',()=>{
       console.log(inputHorizontal.value, inputVertical.value)
+      // Уничтожение окна ввода размеров игры
       gameSizeForm.parentNode.removeChild(gameSizeForm);
+      // Раздача карт
+      cardsDistribution(newCardsHorizontal, newCardsVertical);
     });
+
+    // Ввод в поле 'По горизонтали'
+    inputHorizontal.addEventListener('input',()=>{
+      newCardsHorizontal = chekInput(CARDS_HORIZONTAL, inputHorizontal)
+      // console.log('CARDS_HORIZONTAL, cardsVertical = ', CARDS_HORIZONTAL, cardsVertical);
+    })
+    // Ввод в поле 'По вертикали'
+    inputVertical.addEventListener('input',()=>{
+      let newCardsVertical = chekInput(CARDS_VERTICAL, inputVertical)
+    })
+
+    // проверяем на корректность новые занчения размеров карточного поля
+     if (!(newCardsHorizontal >= 2)&&(newCardsHorizontal <= 10)&&(newCardsHorizontal % 2 === 0)) {
+      newCardsHorizontal = CARDS_HORIZONTAL;
+     }
+     if (!(newCardsVertical >= 2)&&(newCardsVertical <= 10)&&(newCardsVertical % 2 === 0)) {
+      newCardsVertical = CARDS_VERTICAL;
+     }
     return gameSizeForm
   };
+  // Функция ограничения ввода чисел в input
+  function chekInput(cardsNow, input) {
+    if (parseInt(input.value)) {
+      let newSize = parseInt(input.value)
+      if ( ((newSize >= 2)&&(newSize <= 10)&&(newSize % 2 === 0)) || (newSize === 1) ){     //
+        return (newSize);
+      } else {
+        input.value = '';
+        input.placeholder = cardsNow;
+        return (cardsNow);
+        }
+    } else {
+      input.value = '';
+      input.placeholder = cardsNow;
+      return (cardsNow);
+    }
+  };
+
+  function cardsDistribution(cardsHorizontal, cardsVertical) {
+    //  Меняем параметры поля для игры
+    gameContainer.style.flexDirection = 'column';
+    gameContainer.style.justifyContent = 'flex-start';
+    gameContainer.style.alignItems = 'center';
+
+    const numCardsString = document.createElement('p');
+    numCardsString.textContent = 'Количество карт для игры = ' + (cardsHorizontal * cardsVertical) + ' ' + gameContainer.offsetWidth;
+    numCardsString.style.color = BACK_GROUND_COLOR;
+    numCardsString.style.fontSize = FONT_SIZE_MAIN*0.75
+    numCardsString.style.marginBottom = BLOCK_MARGIN_BORDER*0.6;
+    gameContainer.append(numCardsString);
+
+    const cardsList = document.createElement('ul');
+    const cardPadding = 20;
+    cardsList.style.margin = '0px 0px';
+    cardsList.style.padding = cardPadding + 'px';
+    cardsList.style.display = 'flex';
+    cardsList.style.flexWrap = 'wrap'
+    cardsList.style.flexGrow = 1;
+    cardsList.style.justifyContent = 'space-between';
+    cardsList.style.listStyleType = 'none'
+    let cardWidth = () => {
+      let widthContainer = gameContainer.offsetWidth - 2 * cardPadding;
+      let widthOneCard = widthContainer / cardsHorizontal;
+      //let widthOneCardWithoutPadding = widthOneCard -  0.1 * widthOneCard;
+      return widthOneCard //widthOneCardWithoutPadding;
+    };
+    console.log('card.style.width', cardWidth())
+
+    cardArray = []
+    for (let i = 0; i < (cardsHorizontal * cardsVertical); i++) {
+      const card = document.createElement('li');
+      card.style.display = 'flex';
+      card.style.justifyContent = 'center';
+      card.style.alignItems = 'center';
+      card.textContent = 'Карта № = ' + (parseInt(i)+1);
+      card.style.width = cardWidth()+ 'px';
+      card.style.color = BACK_GROUND_COLOR;
+      card.style.fontSize = FONT_SIZE_MAIN*0.75
+      card.style.marginBottom = BLOCK_MARGIN_BORDER*0.2;
+      cardsList.append(card);
+    }
+    gameContainer.append(cardsList);
+  }
 
   document.addEventListener('DOMContentLoaded',() => {
     wraper.append(gameContainer);
     gameContainer.append(createGameSizeForm());
-    console.log('11111111');
-    // gameContainer.append(gameSizeForm);
-    // gameSizeForm.append(gameSizeFormCaption);
-    // let [stringHorizontal, inputHorizontal] = createInput('По горизонтали', sizeHorizontal);
-    // gameSizeForm.append(stringHorizontal);
-    // let [stringVertical, inputVertical] = createInput('По вертикали', sizeVertical);
-    // gameSizeForm.append(stringVertical);
-    // gameSizeForm.append(descriptionRule);
-    // gameSizeForm.append(buttonStartGame);
-    // buttonStartGame.addEventListener('click',()=>{
-    //   console.log(inputHorizontal.value, inputVertical.value)
-    //   gameSizeForm.parentNode.removeChild(gameSizeForm);
-    // });
+    console.log('cardsHorizontal, cardsVertical = ', newCardsHorizontal, newCardsVertical);
   });
 })();
