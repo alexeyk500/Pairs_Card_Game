@@ -248,7 +248,7 @@
       texCardContent.style.fontSize = FONT_SIZE_MAIN*1.5 + 'px';
       texCardContent.textContent = cardsNumArray[i-1];
       texCardContent.textAlign = 'center';
-      texCardContent.style.color = BACK_GROUND_COLOR_CARD_FIELD;
+      texCardContent.style.color = BACK_GROUND_COLOR; //BACK_GROUND_COLOR_CARD_FIELD;
       texCardContent.style.backgroundColor = BACK_GROUND_COLOR;
       texCardContent.style.border = '1px solid ' + BACK_GROUND_COLOR;
       texCardContent.style.borderRadius = BORDER_RADIUS;
@@ -291,7 +291,7 @@
             for (curCard of cards) {
               if ((!curCard.isClose) && (!curCard.havePair)) {
                 // зыкрываем их
-                curCard.style.color = BACK_GROUND_COLOR_CARD_FIELD;
+                curCard.style.color = BACK_GROUND_COLOR;//BACK_GROUND_COLOR_CARD_FIELD;
                 curCard.style.backgroundColor = BACK_GROUND_COLOR;
                 curCard.style.border = '1px solid ' + BACK_GROUND_COLOR;
                 curCard.isClose = true;
