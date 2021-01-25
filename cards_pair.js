@@ -2,12 +2,15 @@
   const BACK_GROUND_COLOR = '#81CDC5';
   const BACK_GROUND_COLOR_CARD_FIELD ='#397670';
   const FONT_COLOR_LIGHT = '#397670';
+  const COLOR_ACTIV_CARD_BORDER = '#2219B2';
   const BORDER_RADIUS = '12px';
-  const BLOCK_MARGIN_BORDER = '5vh';
-  const FONT_SIZE_MAIN = '24px';
+  const BLOCK_MARGIN_BORDER = '5';
+  const FONT_SIZE_MAIN = 32;
 
-  const CARDS_HORIZONTAL = 4
-  const CARDS_VERTICAL = 4;
+  const CARDS_HORIZONTAL = 4  // кол-во карт по умолчанию по горизонтали
+  const CARDS_VERTICAL = 4;   // кол-во карт по умолчанию по вертикали
+
+  const TIME_OUT = 60;       // кол-во секунд для таймера
 
   let newCardsHorizontal = CARDS_HORIZONTAL;
   let newCardsVertical = CARDS_VERTICAL;
@@ -24,7 +27,7 @@
   // Создаем поле для игры
   const gameContainer = document.createElement('div');
   gameContainer.style.display = 'flex';
-  gameContainer.style.margin = BLOCK_MARGIN_BORDER;
+  gameContainer.style.margin = BLOCK_MARGIN_BORDER + '%';
   gameContainer.style.maxWidth = '1200px';
   gameContainer.style.flexGrow = 1;
   gameContainer.style.justifyContent = 'center';
@@ -35,8 +38,8 @@
   const gameSizeForm = document.createElement('div');
   gameSizeForm.style.display = 'flex';
   gameSizeForm.style.flexDirection = 'column'
-  gameSizeForm.style.margin = BLOCK_MARGIN_BORDER;
-  gameSizeForm.style.padding = BLOCK_MARGIN_BORDER
+  gameSizeForm.style.margin = BLOCK_MARGIN_BORDER + '%';
+  gameSizeForm.style.padding = BLOCK_MARGIN_BORDER + '%'
   gameSizeForm.style.flexGrow = 1;
   gameSizeForm.style.alignItems = 'center';
   gameSizeForm.style.backgroundColor = BACK_GROUND_COLOR;
@@ -46,9 +49,9 @@
   // Заголовок
   const gameSizeFormCaption = document.createElement('h2');
   gameSizeFormCaption.textContent = 'Количество карт для игры';
-  gameSizeFormCaption.style.fontSize = FONT_SIZE_MAIN*1.5;
+  gameSizeFormCaption.style.fontSize = FONT_SIZE_MAIN * 1.5 + 'px';
   gameSizeFormCaption.style.color = FONT_COLOR_LIGHT;
-  gameSizeFormCaption.style.marginBottom = BLOCK_MARGIN_BORDER*0.8;
+  gameSizeFormCaption.style.marginBottom = BLOCK_MARGIN_BORDER*0.8 + '%';
 
   // INPUT для ввода количества карт
   function createInput(text, size) {
@@ -56,7 +59,7 @@
     blockInput.style.display = 'flex';
     blockInput.style.justifyContent = 'space-between';
     blockInput.style.alignItems = 'center';
-    blockInput.style.marginBottom = BLOCK_MARGIN_BORDER*0.6;
+    blockInput.style.marginBottom = BLOCK_MARGIN_BORDER*0.6 + '%';
 
     const label = document.createElement('h2');
     label.style.display = 'inline';
@@ -66,11 +69,11 @@
 
     const input = document.createElement('input');
     input.style.backgroundColor = '#CCCCCC';
-    input.style.width = '10vh'
+    input.style.width = '50%'
     input.style.border = 'none';
     input.style.borderRadius = BORDER_RADIUS;
     input.style.color = FONT_COLOR_LIGHT;
-    input.style.fontSize = FONT_SIZE_MAIN
+    input.style.fontSize = FONT_SIZE_MAIN + 'px';
     input.placeholder = size;
     blockInput.append(label);
     blockInput.append(input);
@@ -81,13 +84,13 @@
   const descriptionRule = document.createElement('p');
   descriptionRule.textContent = 'В поле можно ввести чётное число от 2 до 10.'
   descriptionRule.style.color = FONT_COLOR_LIGHT;
-  descriptionRule.style.fontSize = FONT_SIZE_MAIN*0.75
-  descriptionRule.style.marginBottom = BLOCK_MARGIN_BORDER*0.6;
+  descriptionRule.style.fontSize = FONT_SIZE_MAIN + 'px';
+  descriptionRule.style.marginBottom = BLOCK_MARGIN_BORDER*0.6 + '%';
 
   // кнопка начать игру
   const buttonStartGame = document.createElement('button');
   buttonStartGame.style.padding = '10px 20px'
-  buttonStartGame.style.fontSize = FONT_SIZE_MAIN
+  buttonStartGame.style.fontSize = FONT_SIZE_MAIN + 'px';
   buttonStartGame.textContent = 'Начать игру';
   buttonStartGame.style.backgroundColor = BACK_GROUND_COLOR_CARD_FIELD;
   buttonStartGame.style.border = 'none';
@@ -105,30 +108,34 @@
     gameSizeForm.append(buttonStartGame);
     // Нажатие на кнопку 'Начать игру'
     buttonStartGame.addEventListener('click',()=>{
-      console.log(inputHorizontal.value, inputVertical.value)
+      // console.log(inputHorizontal.value, inputVertical.value)
       // Уничтожение окна ввода размеров игры
       gameSizeForm.parentNode.removeChild(gameSizeForm);
       // Раздача карт
+      console.log('newCardsHorizontal, newCardsVertical = ', newCardsHorizontal, newCardsVertical)
       cardsDistribution(newCardsHorizontal, newCardsVertical);
     });
 
     // Ввод в поле 'По горизонтали'
     inputHorizontal.addEventListener('input',()=>{
-      newCardsHorizontal = chekInput(CARDS_HORIZONTAL, inputHorizontal)
+      newCardsHorizontal = chekInput(CARDS_HORIZONTAL, inputHorizontal);
       // console.log('CARDS_HORIZONTAL, cardsVertical = ', CARDS_HORIZONTAL, cardsVertical);
     })
     // Ввод в поле 'По вертикали'
     inputVertical.addEventListener('input',()=>{
-      let newCardsVertical = chekInput(CARDS_VERTICAL, inputVertical)
+      newCardsVertical = chekInput(CARDS_VERTICAL, inputVertical);
+      //console.log('newCardsVertical', newCardsVertical)
     })
 
     // проверяем на корректность новые занчения размеров карточного поля
-     if (!(newCardsHorizontal >= 2)&&(newCardsHorizontal <= 10)&&(newCardsHorizontal % 2 === 0)) {
+    if (!(newCardsHorizontal >= 2)&&(newCardsHorizontal <= 10)&&(newCardsHorizontal % 2 === 0)) {
       newCardsHorizontal = CARDS_HORIZONTAL;
-     }
-     if (!(newCardsVertical >= 2)&&(newCardsVertical <= 10)&&(newCardsVertical % 2 === 0)) {
+      //console.log('newCardsHorizontal', newCardsHorizontal)
+    }
+    if (!(newCardsVertical >= 2)&&(newCardsVertical <= 10)&&(newCardsVertical % 2 === 0)) {
       newCardsVertical = CARDS_VERTICAL;
-     }
+      //console.log('newCardsVertical', newCardsVertical)
+    }
     return gameSizeForm
   };
   // Функция ограничения ввода чисел в input
@@ -149,55 +156,249 @@
     }
   };
 
+  function shuffle(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      let j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+  }
+
   function cardsDistribution(cardsHorizontal, cardsVertical) {
+    let timeGame = 0; // время игры
+
+    let timerId = null;        // здесь будем хранить ID таймера
+    let restOfTime = TIME_OUT; // остаток времени до конца хода
+
     //  Меняем параметры поля для игры
     gameContainer.style.flexDirection = 'column';
     gameContainer.style.justifyContent = 'flex-start';
     gameContainer.style.alignItems = 'center';
 
+    cardsForm = document.createElement('div');
+    cardsForm.style.display = 'flex';
+    cardsForm.style.flexDirection = 'column';
+    cardsForm.style.width = '100%'
+    cardsForm.style.flexGrow = 1;
+    cardsForm.style.alignItems = 'center'
+    gameContainer.append(cardsForm);
+
     const numCardsString = document.createElement('p');
-    numCardsString.textContent = 'Количество карт для игры = ' + (cardsHorizontal * cardsVertical) + ' ' + gameContainer.offsetWidth;
+    numCardsString.textContent = 'Количество карт в игре = ' + (cardsHorizontal * cardsVertical);
     numCardsString.style.color = BACK_GROUND_COLOR;
-    numCardsString.style.fontSize = FONT_SIZE_MAIN*0.75
-    numCardsString.style.marginBottom = BLOCK_MARGIN_BORDER*0.6;
-    gameContainer.append(numCardsString);
+    numCardsString.style.fontSize = FONT_SIZE_MAIN * 1.5 + 'px';
+    numCardsString.style.marginBottom = BLOCK_MARGIN_BORDER*0.1 + '%';
+    cardsForm.append(numCardsString);
+
+    const timeToEndGame = document.createElement('p');
+    timeToEndGame.textContent = 'выберите и нажмите на одну из карт';
+    timeToEndGame.style.color = BACK_GROUND_COLOR;
+    timeToEndGame.style.fontSize = FONT_SIZE_MAIN * 1.5 + 'px';
+    timeToEndGame.style.marginTop = BLOCK_MARGIN_BORDER*0.1 + '%';
+    timeToEndGame.style.marginBottom = BLOCK_MARGIN_BORDER*0.4 + '%';
+    cardsForm.append(timeToEndGame);
 
     const cardsList = document.createElement('ul');
-    const cardPadding = 20;
     cardsList.style.margin = '0px 0px';
-    cardsList.style.padding = cardPadding + 'px';
+    cardsList.style.width = '90%'
+    cardsList.style.padding = '0 0';
     cardsList.style.display = 'flex';
     cardsList.style.flexWrap = 'wrap'
     cardsList.style.flexGrow = 1;
     cardsList.style.justifyContent = 'space-between';
     cardsList.style.listStyleType = 'none'
     let cardWidth = () => {
-      let widthContainer = gameContainer.offsetWidth - 2 * cardPadding;
-      let widthOneCard = widthContainer / cardsHorizontal;
-      //let widthOneCardWithoutPadding = widthOneCard -  0.1 * widthOneCard;
-      return widthOneCard //widthOneCardWithoutPadding;
+      let widthOneCard = 100 / newCardsHorizontal ;
+      return widthOneCard;
     };
-    console.log('card.style.width', cardWidth())
 
-    cardArray = []
-    for (let i = 0; i < (cardsHorizontal * cardsVertical); i++) {
+    // Заполняем массив номерами для текста в карточках
+    cardsNumArray = []
+    for( let i = 1; i <= (cardsHorizontal * cardsVertical)/2; i++) {
+      cardsNumArray.push(i);
+      cardsNumArray.push(i);
+    }
+    // перемешиваем массив
+    shuffle(cardsNumArray);
+
+    for (let i = 1; i <= (cardsHorizontal * cardsVertical); i++) {
       const card = document.createElement('li');
       card.style.display = 'flex';
-      card.style.justifyContent = 'center';
-      card.style.alignItems = 'center';
-      card.textContent = 'Карта № = ' + (parseInt(i)+1);
-      card.style.width = cardWidth()+ 'px';
+      card.style.width = cardWidth() + '%';
       card.style.color = BACK_GROUND_COLOR;
-      card.style.fontSize = FONT_SIZE_MAIN*0.75
-      card.style.marginBottom = BLOCK_MARGIN_BORDER*0.2;
+      card.style.fontSize = FONT_SIZE_MAIN + 'px';
+      // содержимое карточки
+      let cardContent = document.createElement('div');
+      cardContent.style.display = 'flex';
+      cardContent.style.flexGrow = '1';
+      cardContent.style.justifyContent = 'center';
+      // Текст в карточке и обложка
+      let texCardContent = document.createElement('div');
+      texCardContent.className = 'texCardContent';
+      texCardContent.style.marginBottom = '5%';
+      if (i % parseInt(cardsHorizontal) === 0) {
+        texCardContent.style.marginRight  = '0';
+      } else {
+        texCardContent.style.marginRight  = '5%';
+      };
+      texCardContent.style.display = 'flex';
+      texCardContent.style.flexGrow = '1';
+      texCardContent.style.flexDirection = 'column';
+      texCardContent.style.justifyContent = 'center';
+      texCardContent.style.alignItems = 'center';
+      texCardContent.style.fontSize = FONT_SIZE_MAIN*1.5 + 'px';
+      texCardContent.textContent = cardsNumArray[i-1];
+      texCardContent.textAlign = 'center';
+      texCardContent.style.color = BACK_GROUND_COLOR_CARD_FIELD;
+      texCardContent.style.backgroundColor = BACK_GROUND_COLOR;
+      texCardContent.style.border = '1px solid ' + BACK_GROUND_COLOR;
+      texCardContent.style.borderRadius = BORDER_RADIUS;
+      // Пользовательские свойства карты
+      texCardContent.numCard  = i;
+      texCardContent.isClose  = true;
+      texCardContent.havePair = false;
+
+      // Нажатие на карту
+      texCardContent.addEventListener('click',()=>{
+        if (buttonResetGame.style.visibility === 'hidden') {
+          if (!(texCardContent.havePair)) {
+            if (texCardContent.isClose  === true){
+              texCardContent.style.color = BACK_GROUND_COLOR;
+              texCardContent.style.backgroundColor = BACK_GROUND_COLOR_CARD_FIELD;
+              texCardContent.isClose = false;
+              texCardContent.style.border = '1px solid ' + COLOR_ACTIV_CARD_BORDER;
+            } else {
+              texCardContent.style.color = BACK_GROUND_COLOR_CARD_FIELD;
+              texCardContent.style.backgroundColor = BACK_GROUND_COLOR;
+              texCardContent.style.border = '1px solid ' + BACK_GROUND_COLOR;
+              texCardContent.isClose = true;
+            };
+          };
+
+          // Получаем список всех карт
+          const cards = document.getElementsByClassName("texCardContent");
+
+          // Проверяем наличие двух открытых карт
+          let numOpenCardWithoutPair = 0;
+          for (curCard of cards) {
+            if ((!curCard.isClose) && (!curCard.havePair)) {
+              numOpenCardWithoutPair +=1;
+              //console.log('Проверяем наличие двух открытых карт');
+              curCard.style.border = '1px solid ' + COLOR_ACTIV_CARD_BORDER;
+            };
+          };
+          // Если уже открыто две карты без пар то зыкрываем их и открываем текущую
+          if (numOpenCardWithoutPair > 2) {
+            for (curCard of cards) {
+              if ((!curCard.isClose) && (!curCard.havePair)) {
+                // зыкрываем их
+                curCard.style.color = BACK_GROUND_COLOR_CARD_FIELD;
+                curCard.style.backgroundColor = BACK_GROUND_COLOR;
+                curCard.style.border = '1px solid ' + BACK_GROUND_COLOR;
+                curCard.isClose = true;
+                numOpenCardWithoutPair = 1;
+              };
+            };
+          }
+
+          // открываем текущую
+          if (!texCardContent.havePair) {
+            texCardContent.style.color = BACK_GROUND_COLOR;
+            texCardContent.style.backgroundColor = BACK_GROUND_COLOR_CARD_FIELD;
+            texCardContent.style.border = '1px solid ' + COLOR_ACTIV_CARD_BORDER;
+            texCardContent.isClose = false;
+          }
+          if (curCard.havePair) {
+            curCard.style.border = '1px solid ' + BACK_GROUND_COLOR;
+          }
+
+          // Если открывается вторая карта проверяем ее на парность
+          let arrCardText = []
+          if (numOpenCardWithoutPair == 2) {
+            for (curCard of cards) {
+              if ((!curCard.isClose) && (!curCard.havePair)) {
+                // смотрим, что за текст
+                arrCardText.push(curCard.textContent)
+              };
+            };
+            // Если текст в картах одинаковый, то делаем их парными
+            if (arrCardText[0]==arrCardText[1]) {
+              for (curCard of cards) {
+                if ((!curCard.isClose) && (!curCard.havePair)) {
+                  curCard.havePair = true;
+                  curCard.style.border = '1px solid ' + BACK_GROUND_COLOR;
+                };
+                numOpenCardWithoutPair = 1;
+              };
+            };
+          };
+          // Проверяем на окончание игры и отображаем счет
+          // Считаем количество карт имеющих пары (пары == кол-ву карт => конец игры)
+          let cardsHavePair = 0;
+          for (curCard of cards) {
+            if (curCard.havePair) {
+              cardsHavePair +=1;
+            };
+          };
+          // Отображаем остаток карт в игре
+          numCardsString.textContent = 'Количество карт в игре = ' + (cardsHorizontal * cardsVertical - cardsHavePair);
+
+          // Отображаем таймер
+          restOfTime = TIME_OUT;
+          clearTimeout(timerId);
+          timerId = setTimeout(function tick() {
+            restOfTime -= 1;
+            timeGame +=1;
+            if (restOfTime === 0) {
+              if (numCardsString.textContent !== 'Победа') {
+                timeToEndGame.textContent = 'Время хода вышло';
+              }
+              buttonResetGame.style.visibility = 'visible';
+              clearTimeout(timerId);
+              return;
+            }
+            if (numCardsString.textContent !== 'Победа') {
+              timeToEndGame.textContent = 'До конца хода осталось = ' + restOfTime + ' сек.';
+            }
+            timerId = setTimeout(tick, 1000);
+          }, 1000);
+
+          if (cardsHavePair == (cardsHorizontal * cardsVertical)) {
+            numCardsString.textContent = 'Победа';
+            timeToEndGame.textContent = 'время игры = '+ timeGame +' сек.'
+            buttonResetGame.style.visibility = 'visible';
+          }
+        }
+      });
+      cardContent.append(texCardContent);
+      card.append(cardContent);
       cardsList.append(card);
-    }
-    gameContainer.append(cardsList);
-  }
+    };
+    cardsForm.append(cardsList);
+
+    // Сыграть ещё раз
+    const buttonResetGame = document.createElement('button');
+    buttonResetGame.style.display = 'block';
+    buttonResetGame.style.margin = '1%';
+    buttonResetGame.style.marginBottom = '2%';
+    buttonResetGame.style.padding = '10px 20px'
+    buttonResetGame.style.fontSize = FONT_SIZE_MAIN + 'px';
+    buttonResetGame.textContent = 'Сыграть ещё раз';
+    buttonResetGame.style.backgroundColor = BACK_GROUND_COLOR;
+    buttonResetGame.style.border = 'none';
+    buttonResetGame.style.borderRadius = BORDER_RADIUS;
+    buttonResetGame.style.color = BACK_GROUND_COLOR_CARD_FIELD;
+    buttonResetGame.style.visibility = 'hidden';
+    cardsForm.append(buttonResetGame);
+    // Нажатие на кнопку 'Сыграть ещё раз'
+    buttonResetGame.addEventListener('click',()=>{
+      cardsForm.parentNode.removeChild(cardsForm);
+      cardsDistribution(cardsHorizontal, cardsVertical)
+    });
+
+  };
 
   document.addEventListener('DOMContentLoaded',() => {
     wraper.append(gameContainer);
     gameContainer.append(createGameSizeForm());
-    console.log('cardsHorizontal, cardsVertical = ', newCardsHorizontal, newCardsVertical);
   });
 })();
