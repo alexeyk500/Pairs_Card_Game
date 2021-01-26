@@ -5,7 +5,8 @@
   const COLOR_ACTIV_CARD_BORDER = '#2219B2';
   const BORDER_RADIUS = '12px';
   const BLOCK_MARGIN_BORDER = '5';
-  const FONT_SIZE_MAIN = 32;
+  const MAX_WIDTH = 1200;
+
 
   const CARDS_HORIZONTAL = 4  // кол-во карт по умолчанию по горизонтали
   const CARDS_VERTICAL = 4;   // кол-во карт по умолчанию по вертикали
@@ -24,11 +25,19 @@
   wraper.style.justifyContent = 'center';
   wraper.style.backgroundColor = BACK_GROUND_COLOR;
 
+  // Определяем размер шрифта для надписей
+  let wraperWidth = wraper.offsetWidth
+  if (wraperWidth >= MAX_WIDTH) {
+    wraperWidth = MAX_WIDTH;
+  }
+  let fontSizeMain = parseInt(wraperWidth / 47);
+  console.log('wraper.offsetWidth, fontSize =', wraperWidth, fontSizeMain);
+
   // Создаем поле для игры
   const gameContainer = document.createElement('div');
   gameContainer.style.display = 'flex';
   gameContainer.style.margin = BLOCK_MARGIN_BORDER + '%';
-  gameContainer.style.maxWidth = '1200px';
+  gameContainer.style.maxWidth = MAX_WIDTH + 'px';
   gameContainer.style.flexGrow = 1;
   gameContainer.style.justifyContent = 'center';
   gameContainer.style.backgroundColor = BACK_GROUND_COLOR_CARD_FIELD;
@@ -49,8 +58,10 @@
   // Заголовок
   const gameSizeFormCaption = document.createElement('h2');
   gameSizeFormCaption.textContent = 'Количество карт для игры';
-  gameSizeFormCaption.style.fontSize = FONT_SIZE_MAIN * 1.5 + 'px';
+  gameSizeFormCaption.style.textAlign = 'center';
+  gameSizeFormCaption.style.fontSize = fontSizeMain * 1.5 + 'px';
   gameSizeFormCaption.style.color = FONT_COLOR_LIGHT;
+  gameSizeFormCaption.style.marginTop = BLOCK_MARGIN_BORDER*0.0 + '%';
   gameSizeFormCaption.style.marginBottom = BLOCK_MARGIN_BORDER*0.8 + '%';
 
   // INPUT для ввода количества карт
@@ -63,6 +74,7 @@
 
     const label = document.createElement('h2');
     label.style.display = 'inline';
+    label.style.textAlign = 'center';
     label.textContent = text;
     label.style.margin  = '10px 10px 10px 0px'
     label.style.color = FONT_COLOR_LIGHT;
@@ -73,7 +85,7 @@
     input.style.border = 'none';
     input.style.borderRadius = BORDER_RADIUS;
     input.style.color = FONT_COLOR_LIGHT;
-    input.style.fontSize = FONT_SIZE_MAIN + 'px';
+    input.style.fontSize = fontSizeMain + 'px';
     input.placeholder = size;
     blockInput.append(label);
     blockInput.append(input);
@@ -82,15 +94,16 @@
 
   // тескст с описанием правил ввода кол-ва карт
   const descriptionRule = document.createElement('p');
-  descriptionRule.textContent = 'В поле можно ввести чётное число от 2 до 10.'
+  descriptionRule.textContent = 'В поле можно ввести чётное число от 2 до 10.';
+  descriptionRule.style.textAlign = 'center';
   descriptionRule.style.color = FONT_COLOR_LIGHT;
-  descriptionRule.style.fontSize = FONT_SIZE_MAIN + 'px';
+  descriptionRule.style.fontSize = fontSizeMain + 'px';
   descriptionRule.style.marginBottom = BLOCK_MARGIN_BORDER*0.6 + '%';
 
   // кнопка начать игру
   const buttonStartGame = document.createElement('button');
   buttonStartGame.style.padding = '10px 20px'
-  buttonStartGame.style.fontSize = FONT_SIZE_MAIN + 'px';
+  buttonStartGame.style.fontSize = fontSizeMain + 'px';
   buttonStartGame.textContent = 'Начать игру';
   buttonStartGame.style.backgroundColor = BACK_GROUND_COLOR_CARD_FIELD;
   buttonStartGame.style.border = 'none';
@@ -184,15 +197,17 @@
 
     const numCardsString = document.createElement('p');
     numCardsString.textContent = 'Количество карт в игре = ' + (cardsHorizontal * cardsVertical);
+    numCardsString.style.textAlign = 'center';
     numCardsString.style.color = BACK_GROUND_COLOR;
-    numCardsString.style.fontSize = FONT_SIZE_MAIN * 1.5 + 'px';
+    numCardsString.style.fontSize = fontSizeMain * 1.5 + 'px';
     numCardsString.style.marginBottom = BLOCK_MARGIN_BORDER*0.1 + '%';
     cardsForm.append(numCardsString);
 
     const timeToEndGame = document.createElement('p');
     timeToEndGame.textContent = 'выберите и нажмите на одну из карт';
+    timeToEndGame.style.textAlign = 'center';
     timeToEndGame.style.color = BACK_GROUND_COLOR;
-    timeToEndGame.style.fontSize = FONT_SIZE_MAIN * 1.5 + 'px';
+    timeToEndGame.style.fontSize = fontSizeMain * 1.5 + 'px';
     timeToEndGame.style.marginTop = BLOCK_MARGIN_BORDER*0.1 + '%';
     timeToEndGame.style.marginBottom = BLOCK_MARGIN_BORDER*0.4 + '%';
     cardsForm.append(timeToEndGame);
@@ -211,6 +226,10 @@
       return widthOneCard;
     };
 
+    // Корректируем рамер шрифта для карт
+    fontSizeCards= parseInt(fontSizeMain * 2);
+    console.log('wraper.offsetWidth, fontSizeCards = ', fontSizeMain, fontSizeCards);
+
     // Заполняем массив номерами для текста в карточках
     cardsNumArray = []
     for( let i = 1; i <= (cardsHorizontal * cardsVertical)/2; i++) {
@@ -225,7 +244,7 @@
       card.style.display = 'flex';
       card.style.width = cardWidth() + '%';
       card.style.color = BACK_GROUND_COLOR;
-      card.style.fontSize = FONT_SIZE_MAIN + 'px';
+      //card.style.fontSize = fontSizeCards + 'px';
       // содержимое карточки
       let cardContent = document.createElement('div');
       cardContent.style.display = 'flex';
@@ -245,7 +264,7 @@
       texCardContent.style.flexDirection = 'column';
       texCardContent.style.justifyContent = 'center';
       texCardContent.style.alignItems = 'center';
-      texCardContent.style.fontSize = FONT_SIZE_MAIN*1.5 + 'px';
+      texCardContent.style.fontSize = fontSizeCards + 'px';
       texCardContent.textContent = cardsNumArray[i-1];
       texCardContent.textAlign = 'center';
       texCardContent.style.color = BACK_GROUND_COLOR; //BACK_GROUND_COLOR_CARD_FIELD;
@@ -342,31 +361,36 @@
           // Отображаем остаток карт в игре
           numCardsString.textContent = 'Количество карт в игре = ' + (cardsHorizontal * cardsVertical - cardsHavePair);
 
-          // Отображаем таймер
-          restOfTime = TIME_OUT;
-          clearTimeout(timerId);
-          timerId = setTimeout(function tick() {
-            restOfTime -= 1;
-            timeGame +=1;
-            if (restOfTime === 0) {
-              if (numCardsString.textContent !== 'Победа') {
-                timeToEndGame.textContent = 'Время хода вышло';
-              }
-              buttonResetGame.style.visibility = 'visible';
-              clearTimeout(timerId);
-              return;
-            }
-            if (numCardsString.textContent !== 'Победа') {
-              timeToEndGame.textContent = 'До конца хода осталось = ' + restOfTime + ' сек.';
-            }
-            timerId = setTimeout(tick, 1000);
-          }, 1000);
-
+          // Проверяем на победу в игре
           if (cardsHavePair == (cardsHorizontal * cardsVertical)) {
             numCardsString.textContent = 'Победа';
             timeToEndGame.textContent = 'время игры = '+ timeGame +' сек.'
             buttonResetGame.style.visibility = 'visible';
           }
+
+          if (timerId === null) {
+            // заводим таймер
+            restOfTime = TIME_OUT;
+            clearTimeout(timerId);
+            // Отображаем таймер
+            timerId = setTimeout(function tick() {
+              restOfTime -= 1;
+              timeGame +=1;
+              if (restOfTime === 0) {
+                if (numCardsString.textContent !== 'Победа') {
+                  timeToEndGame.textContent = 'Время игры вышло';
+                }
+                buttonResetGame.style.visibility = 'visible';
+                clearTimeout(timerId);
+                return;
+              }
+              if (numCardsString.textContent !== 'Победа') {
+                timeToEndGame.textContent = 'До конца игры осталось = ' + restOfTime + ' сек.';
+              }
+              timerId = setTimeout(tick, 1000);
+            }, 1000);
+          }
+
         }
       });
       cardContent.append(texCardContent);
@@ -381,7 +405,7 @@
     buttonResetGame.style.margin = '1%';
     buttonResetGame.style.marginBottom = '2%';
     buttonResetGame.style.padding = '10px 20px'
-    buttonResetGame.style.fontSize = FONT_SIZE_MAIN + 'px';
+    buttonResetGame.style.fontSize = fontSizeMain + 'px';
     buttonResetGame.textContent = 'Сыграть ещё раз';
     buttonResetGame.style.backgroundColor = BACK_GROUND_COLOR;
     buttonResetGame.style.border = 'none';
